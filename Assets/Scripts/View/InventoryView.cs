@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class InventoryView : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public List<SlotGrid> slotGrid;
+
     void Start()
+    {
+        // 测试代码
+        UpdateInventory();
+    }
+
+    void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void UpdateInventory()
     {
-        
+
     }
 }
