@@ -11,7 +11,7 @@ public class InventoryView : MonoBehaviour
         // 测试代码
         UpdateInventory();
     }
-
+    
     void Update()
     {
         

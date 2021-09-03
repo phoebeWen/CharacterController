@@ -5,7 +5,6 @@ using UnityEngine;
 public class SlotGrid : MonoBehaviour
 {
     List<Slot> slotList;
-    
     void Start()
     {
         slotList = new List<Slot>();
