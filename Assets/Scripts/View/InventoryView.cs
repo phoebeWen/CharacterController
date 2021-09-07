@@ -9,7 +9,7 @@ public class InventoryView : MonoBehaviour
     void Start()
     {
         // 测试代码
-        UpdateInventory();
+        // UpdateInventory();
     }
     
     void Update()

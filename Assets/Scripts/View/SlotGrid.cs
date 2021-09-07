@@ -4,14 +4,33 @@ using UnityEngine;
 
 public class SlotGrid : MonoBehaviour
 {
-    List<Slot> slotList;
+    public List<GameObject> slotList;
+
+    [HideInInspector]
+    public List<Item> itemList;
+
     void Start()
     {
-        slotList = new List<Slot>();
-        for(int index = 0; index < transform.childCount; index++)
+        itemList = new List<Item>();
+    }
+
+    public void UpdateSlot()
+    {
+        for (int index = 0; index < slotList.Count; index++)
         {
-            Slot s = transform.GetChild(index).GetComponent<Slot>();
-            slotList.Add(s);
+            GameObject obj = slotList[index];
+            if(obj.transform.childCount > 0)
+            {
+                Item item = obj.GetComponentInChildren<Item>();
+                item.onEndDrag +=  EndDrag;
+
+                itemList.Add(item);
+            }
         }
+    }
+
+    public void EndDrag(Item item, GameObject obj)
+    {
+        
     }
 }
