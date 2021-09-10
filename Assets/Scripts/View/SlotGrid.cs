@@ -12,6 +12,8 @@ public class SlotGrid : MonoBehaviour
     void Start()
     {
         itemList = new List<Item>();
+
+        UpdateSlot();
     }
 
     public void UpdateSlot()
@@ -22,15 +24,8 @@ public class SlotGrid : MonoBehaviour
             if(obj.transform.childCount > 0)
             {
                 Item item = obj.GetComponentInChildren<Item>();
-                item.onEndDrag +=  EndDrag;
-
                 itemList.Add(item);
             }
         }
-    }
-
-    public void EndDrag(Item item, GameObject obj)
-    {
-        
     }
 }
