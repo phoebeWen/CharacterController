@@ -5,62 +5,99 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
-{
+public class Item : MonoBehaviour//, IBeginDragHandler, IDragHandler, IEndDragHandler
+{  
     public Image icon;
     public Action<Item, GameObject> onEndDrag;
 
     private Transform originalParent;
     private Vector3 originalPos;
+    private SrollRectEx scrollView;
+    private bool swap = false;
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void SetContent(SrollRectEx sr)
     {
-        float angle = Vector2.Angle(Vector2.right, eventData.delta);
-        if(angle < 30 || angle > 150)
-        { 
-            GetComponent<CanvasGroup>().blocksRaycasts = false;
-            return;
-        }
+        scrollView = sr;
 
         originalParent = transform.parent;
         originalPos = transform.position;
-
-        transform.SetParent(transform.parent.parent);
-        transform.position = eventData.position;
-
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public void OnBeginDrag(BaseEventData bEvent)
     {
-        transform.position = eventData.position;
-    }
+        PointerEventData eventData = bEvent as PointerEventData;
+        float angle = Vector2.Angle(Vector2.right, eventData.delta);
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        GameObject reachedObj = eventData.pointerCurrentRaycast.gameObject;
-        if (reachedObj.tag == "Slot")
+        if(swap = angle > 30f && angle < 150f)
         {
-            originalParent = reachedObj.transform;
-            transform.SetParent(originalParent);
-        }
-        else if (reachedObj.gameObject.name == "img")
-        {
-            Transform newParent = reachedObj.transform.parent.parent;
-            Vector3 newPos = reachedObj.transform.parent.position;
+            scrollView.StopMovement();
+            transform.GetComponent<CanvasGroup>().blocksRaycasts = false;
 
-            transform.SetParent(newParent);
-            transform.position = newPos;
+            originalParent = transform.parent;
+            originalPos = transform.position;
 
-            reachedObj.transform.parent.SetParent(originalParent);
-            reachedObj.transform.parent.position = originalPos;
-
-            originalParent = newParent;
+            transform.SetParent(transform.parent.parent);
+            transform.position = eventData.position;
         }
         else
         {
+            scrollView.OnBeginDrag(eventData);
+        }
+    }
+
+    public void OnDrag(BaseEventData bEvent)
+    {
+        PointerEventData eventData = bEvent as PointerEventData;
+        if(swap)
+        {
+            transform.position = eventData.position;
+        }
+        else
+        {
+            scrollView.OnDrag(eventData);
+        }
+    }
+
+    public void OnEndDrag(BaseEventData bEvent)
+    {
+        PointerEventData eventData = bEvent as PointerEventData;
+        GameObject reachedObj = eventData.pointerCurrentRaycast.gameObject;
+        if(null == reachedObj)
+        {
             transform.SetParent(originalParent);
             transform.position = originalPos;
+
+            scrollView.OnEndDrag(eventData);
+        }
+        else if(swap)
+        {
+            if (reachedObj.tag == "Slot")
+            {
+                originalParent = reachedObj.transform;
+                transform.SetParent(originalParent);
+            }
+            else if (reachedObj.gameObject.name == "img")
+            {
+                Transform newParent = reachedObj.transform.parent.parent;
+                Vector3 newPos = reachedObj.transform.parent.position;
+
+                transform.SetParent(newParent);
+                transform.position = newPos;
+
+                reachedObj.transform.parent.SetParent(originalParent);
+                reachedObj.transform.parent.position = originalPos;
+
+                originalParent = newParent;
+            }
+            else
+            {
+                transform.SetParent(originalParent);
+                transform.position = originalPos;
+            }
+        }
+        else
+        {
+            scrollView.OnEndDrag(eventData);
         }
 
         RectTransform rect = transform.GetComponent<RectTransform>();
@@ -70,6 +107,6 @@ public class Item : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         rect.anchorMax = Vector2.one;
 
         originalPos = transform.position;
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        transform.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 }
