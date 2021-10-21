@@ -48,6 +48,7 @@ public class CameraController : MonoBehaviour
         curZoom = Mathf.Clamp(curZoom, -maxZoomOut, maxZoomIn);
 
         // Debug.Log(curZoom);
+        // ！！！！
         curOffset = updateOffset - updateOffset * curZoom;
 
         Vector3 newPos = followTarget.position + curOffset;

@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class SrollRectEx : ScrollRect //, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    private ScrollRect scrollRect;
     private int count;
     private float[] stepPoints;
     private bool lerp = false;
